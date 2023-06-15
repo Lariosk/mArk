@@ -1,0 +1,29 @@
+IF OBJECT_ID('SchemaName.TableName', 'U') IS NOT NULL
+DROP TABLE SchemaName.TableName
+GO
+-- Create the table in the specified schema
+CREATE TABLE clientes
+(
+    id INT NOT NULL PRIMARY KEY, -- primary key column
+    nombre [NVARCHAR](50) NOT NULL,
+    
+    -- specify more columns here
+);
+
+CREATE TABLE logs
+(
+
+    nuevo_valor [NVARCHAR](50) NOT NULL,
+    viejo_valor[NVARCHAR](50),
+    tipo VARCHAR(50),
+    fecha_creación DATETIME DEFAULT CURRENT_TIMESTAMP
+
+    -- specify more columns here
+);
+CREATE TRIGGER 
+after_update_usuarios
+On EACH ROW
+
+    UPDATE whit, logs(nuevo_valor, viejo_valor, tipo) VALUES ("NEW.nombre", OLD.nombre, "update" )
+END
+GO;
