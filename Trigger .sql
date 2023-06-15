@@ -22,12 +22,10 @@ CREATE TABLE logs
 
     -- specify more columns here
 );
-DELIMITER //
-CREATE TRIGGER after_update_usuarios
-AFTER UPDATE ON usuarios
-FOR EACH ROW
-BEGIN
-    INSERT INTO logs(nuevo_valor, viejo_valor, tipo) VALUES(NEW.nombre, OLD.nombre, "update" )
-END;
-DELIMITER ;
-GO
+CREATE TRIGGER 
+after_update_usuarios
+On EACH ROW
+
+    UPDATE whit, logs(nuevo_valor, viejo_valor, tipo) VALUES ("NEW.nombre", OLD.nombre, "update" )
+END
+GO;
