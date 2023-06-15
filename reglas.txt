@@ -1,0 +1,1 @@
+RDN1- La contraseña del cliente deberá contener por lo menos 6 carcateres de los cuales uno debe ser una mayúscula}
