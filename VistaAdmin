@@ -54,6 +54,15 @@
           <td>UPDATE</td>
           <td>2025-06-09 14:25</td>
         </tr>
+ <tr>
+          <td>1</td>
+          <td>101</td>
+          <td>Juan Gabriel</td>
+          <td>Juaga</td>
+          <td>Juan Gabriel King</td>
+          <td>UPDATE</td>
+          <td>2025-06-09 14:25</td>
+        </tr>
         <!-- Aquí irán más registros si los traes desde la base de datos -->
       </tbody>
     </table>
