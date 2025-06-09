@@ -1,31 +1,62 @@
--- Create a new table called 'TableName' in schema 'SchemaName'
--- Drop the table if it already exists
-IF OBJECT_ID('SchemaName.TableName', 'U') IS NOT NULL
-DROP TABLE SchemaName.TableName
+-- Eliminar la tabla si ya existe
+IF OBJECT_ID('dbo.usuarios', 'U') IS NOT NULL
+    DROP TABLE dbo.usuarios;
 GO
--- Create the table in the specified schema
-CREATE TABLE usuarios
+
+IF OBJECT_ID('dbo.logs', 'U') IS NOT NULL
+    DROP TABLE dbo.logs;
+GO
+
+-- Crear la tabla de usuarios
+CREATE TABLE dbo.usuarios
 (
-    id INT NOT NULL PRIMARY KEY, -- primary key column
-    nombre [NVARCHAR](50) NOT NULL,
-    
-    -- specify more columns here
+    id INT PRIMARY KEY,
+    nombre NVARCHAR(50) NOT NULL
+    -- Puedes agregar más columnas si lo deseas
 );
+GO
 
-CREATE TABLE logs
+-- Crear la tabla de logs
+CREATE TABLE dbo.logs
 (
-
-    nuevo_valor [NVARCHAR](50) NOT NULL,
-    viejo_valor[NVARCHAR](50),
-    tipo VARCHAR(50),
-    fecha_creación DATETIME DEFAULT CURRENT_TIMESTAMP
-
-    -- specify more columns here
+    id INT IDENTITY(1,1) PRIMARY KEY,
+    usuario_id INT,
+    viejo_valor NVARCHAR(50),
+    nuevo_valor NVARCHAR(50),
+    tipo NVARCHAR(50),
+    fecha_creacion DATETIME DEFAULT GETDATE()
 );
-CREATE TRIGGER 
-after_update_usuarios
-On EACH ROW
+GO
 
-    UPDATE whit, logs(nuevo_valor, viejo_valor, tipo) VALUES ("NEW.nombre", OLD.nombre, "update" )
-END
-GO;
+-- Crear trigger AFTER UPDATE en la tabla usuarios
+CREATE TRIGGER trg_AfterUpdate_Usuarios
+ON dbo.usuarios
+AFTER UPDATE
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    INSERT INTO dbo.logs (usuario_id, viejo_valor, nuevo_valor, tipo)
+    SELECT
+        i.id,
+        d.nombre,
+        i.nombre,
+        'UPDATE'
+    FROM inserted i
+    INNER JOIN deleted d ON i.id = d.id;
+END;
+GO
+
+-- Crear vista para el administrador
+CREATE VIEW vista_logs_admin AS
+SELECT 
+    l.id AS log_id,
+    u.id AS usuario_id,
+    u.nombre AS nombre_actual,
+    l.viejo_valor,
+    l.nuevo_valor,
+    l.tipo,
+    l.fecha_creacion
+FROM dbo.logs l
+LEFT JOIN dbo.usuarios u ON l.usuario_id = u.id;
+GO
